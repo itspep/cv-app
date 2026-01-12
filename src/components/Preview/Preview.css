@@ -1,0 +1,227 @@
+.cv-preview {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  line-height: 1.6;
+  padding: 20px;
+  background: white;
+  min-height: 100vh;
+}
+
+/* Header */
+.cv-header {
+  border-bottom: 3px solid #4a6fa5;
+  padding-bottom: 25px;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.cv-name h1 {
+  margin: 0 0 10px 0;
+  font-size: 2.5rem;
+  color: #2c3e50;
+  font-weight: 700;
+}
+
+.cv-summary {
+  margin: 0;
+  color: #666;
+  font-size: 1.1rem;
+  max-width: 600px;
+  line-height: 1.6;
+}
+
+.cv-contact {
+  text-align: right;
+  font-size: 0.95rem;
+}
+
+.contact-item {
+  margin-bottom: 6px;
+  color: #555;
+}
+
+.contact-item strong {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+/* Sections */
+.cv-section {
+  margin-bottom: 30px;
+  page-break-inside: avoid;
+}
+
+.section-title {
+  color: #2c3e50;
+  font-size: 1.5rem;
+  margin: 0 0 20px 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-icon {
+  font-size: 1.3rem;
+}
+
+/* Items */
+.section-item {
+  margin-bottom: 25px;
+  page-break-inside: avoid;
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.item-title h3 {
+  margin: 0 0 5px 0;
+  font-size: 1.2rem;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.item-subtitle {
+  margin: 0;
+  color: #4a6fa5;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.item-date {
+  color: #666;
+  font-size: 0.95rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.item-description {
+  margin: 10px 0 0 0;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* Skills Grid */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.skill-item {
+  margin-bottom: 15px;
+}
+
+.skill-name {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+
+.skill-level {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.skill-level-bar {
+  flex: 1;
+  height: 8px;
+  background: #ecf0f1;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.skill-level-fill {
+  height: 100%;
+  background: #4a6fa5;
+  border-radius: 4px;
+}
+
+.skill-level-text {
+  font-size: 0.85rem;
+  color: #666;
+  min-width: 70px;
+  text-align: right;
+}
+
+/* Print Styles */
+@media print {
+  .cv-preview {
+    padding: 0;
+    min-height: auto;
+  }
+  
+  .cv-header {
+    border-bottom: 2px solid #4a6fa5;
+    padding-bottom: 20px;
+    margin-bottom: 25px;
+  }
+  
+  .cv-name h1 {
+    font-size: 2rem;
+  }
+  
+  .section-title {
+    font-size: 1.3rem;
+  }
+  
+  .skills-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .cv-header {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .cv-contact {
+    text-align: left;
+  }
+  
+  .cv-name h1 {
+    font-size: 2rem;
+  }
+  
+  .skills-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .item-header {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .item-date {
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .cv-preview {
+    padding: 15px;
+  }
+  
+  .cv-name h1 {
+    font-size: 1.8rem;
+  }
+  
+  .section-title {
+    font-size: 1.3rem;
+  }
+}
