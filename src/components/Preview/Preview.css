@@ -225,3 +225,85 @@
     font-size: 1.3rem;
   }
 }
+
+/* Enhanced Print Styles */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  
+  #cv-preview,
+  #cv-preview * {
+    visibility: visible;
+  }
+  
+  #cv-preview {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    background: white;
+    box-shadow: none;
+    border: none;
+  }
+  
+  .cv-header {
+    border-bottom: 2px solid #000;
+    margin-bottom: 20px;
+  }
+  
+  .cv-name h1 {
+    font-size: 24pt;
+    color: #000;
+  }
+  
+  .section-title {
+    font-size: 16pt;
+    color: #000;
+    border-bottom: 1px solid #000;
+  }
+  
+  .item-title h3 {
+    font-size: 12pt;
+  }
+  
+  .skills-grid {
+    break-inside: avoid;
+  }
+  
+  .skill-level-bar {
+    background: #ccc !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .skill-level-fill {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  /* Hide non-essential elements */
+  .section-icon,
+  .print-button-container,
+  .action-buttons,
+  .input-section,
+  .header-instructions,
+  .game-header,
+  .app-container > :not(.preview-section) {
+    display: none !important;
+  }
+}
+
+/* Prevent page breaks inside important sections */
+.cv-section,
+.section-item {
+  page-break-inside: avoid;
+}
+
+/* Ensure proper spacing for print */
+.cv-preview {
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}

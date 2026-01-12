@@ -2,9 +2,22 @@ import React from 'react';
 import './PersonalInfo.css';
 
 const PersonalInfo = ({ data, onChange }) => {
+  // Ensure data is never undefined
+  const safeData = data || {
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    address: '',
+    website: '',
+    summary: ''
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    onChange({ [name]: value });
+    if (onChange) {
+      onChange({ [name]: value });
+    }
   };
 
   return (
@@ -16,7 +29,7 @@ const PersonalInfo = ({ data, onChange }) => {
             type="text"
             id="firstName"
             name="firstName"
-            value={data.firstName}
+            value={safeData.firstName || ''}
             onChange={handleChange}
             placeholder="John"
             required
@@ -29,7 +42,7 @@ const PersonalInfo = ({ data, onChange }) => {
             type="text"
             id="lastName"
             name="lastName"
-            value={data.lastName}
+            value={safeData.lastName || ''}
             onChange={handleChange}
             placeholder="Doe"
             required
@@ -44,7 +57,7 @@ const PersonalInfo = ({ data, onChange }) => {
             type="email"
             id="email"
             name="email"
-            value={data.email}
+            value={safeData.email || ''}
             onChange={handleChange}
             placeholder="john.doe@example.com"
             required
@@ -57,7 +70,7 @@ const PersonalInfo = ({ data, onChange }) => {
             type="tel"
             id="phone"
             name="phone"
-            value={data.phone}
+            value={safeData.phone || ''}
             onChange={handleChange}
             placeholder="(123) 456-7890"
           />
@@ -70,7 +83,7 @@ const PersonalInfo = ({ data, onChange }) => {
           type="text"
           id="address"
           name="address"
-          value={data.address}
+          value={safeData.address || ''}
           onChange={handleChange}
           placeholder="123 Main Street, City, Country"
         />
@@ -82,7 +95,7 @@ const PersonalInfo = ({ data, onChange }) => {
           type="url"
           id="website"
           name="website"
-          value={data.website}
+          value={safeData.website || ''}
           onChange={handleChange}
           placeholder="yourportfolio.com"
         />
@@ -93,7 +106,7 @@ const PersonalInfo = ({ data, onChange }) => {
         <textarea
           id="summary"
           name="summary"
-          value={data.summary}
+          value={safeData.summary || ''}
           onChange={handleChange}
           placeholder="Briefly describe your professional background, skills, and career objectives..."
           rows="4"

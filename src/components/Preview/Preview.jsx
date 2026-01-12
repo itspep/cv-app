@@ -2,8 +2,25 @@ import React from 'react';
 import { formatDate, formatDateRange } from '../../utils/formatDate';
 import './Preview.css';
 
-const Preview = ({ cvData }) => {
-  const { personalInfo, education, experience, skills } = cvData;
+const Preview = ({ cvData = {} }) => {
+  // Ensure cvData has all required properties
+  const safeCvData = {
+    personalInfo: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      address: '',
+      website: '',
+      summary: '',
+      ...cvData?.personalInfo
+    },
+    education: cvData?.education || [],
+    experience: cvData?.experience || [],
+    skills: cvData?.skills || []
+  };
+
+  const { personalInfo, education, experience, skills } = safeCvData;
 
   const getProficiencyText = (level) => {
     if (level >= 80) return 'Expert';
@@ -58,8 +75,8 @@ const Preview = ({ cvData }) => {
             <div key={index} className="section-item">
               <div className="item-header">
                 <div className="item-title">
-                  <h3>{exp.position}</h3>
-                  <p className="item-subtitle">{exp.company}</p>
+                  <h3>{exp.position || ''}</h3>
+                  <p className="item-subtitle">{exp.company || ''}</p>
                 </div>
                 <div className="item-date">
                   {formatDateRange(exp.startDate, exp.endDate)}
@@ -84,8 +101,8 @@ const Preview = ({ cvData }) => {
             <div key={index} className="section-item">
               <div className="item-header">
                 <div className="item-title">
-                  <h3>{edu.degree}</h3>
-                  <p className="item-subtitle">{edu.school}</p>
+                  <h3>{edu.degree || ''}</h3>
+                  <p className="item-subtitle">{edu.school || ''}</p>
                 </div>
                 <div className="item-date">
                   {formatDateRange(edu.startDate, edu.endDate)}
@@ -109,16 +126,16 @@ const Preview = ({ cvData }) => {
           <div className="skills-grid">
             {skills.map((skill, index) => (
               <div key={index} className="skill-item">
-                <div className="skill-name">{skill.name}</div>
+                <div className="skill-name">{skill.name || ''}</div>
                 <div className="skill-level">
                   <div className="skill-level-bar">
                     <div 
                       className="skill-level-fill"
-                      style={{ width: `${skill.level}%` }}
+                      style={{ width: `${skill.level || 0}%` }}
                     />
                   </div>
                   <span className="skill-level-text">
-                    {getProficiencyText(skill.level)}
+                    {getProficiencyText(skill.level || 0)}
                   </span>
                 </div>
               </div>

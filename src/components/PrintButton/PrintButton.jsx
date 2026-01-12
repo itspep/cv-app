@@ -1,164 +1,160 @@
-import React, { useRef } from 'react';
-import { useReactToPrint } from 'react-to-print';
+import React from 'react';
 import './PrintButton.css';
 
-const PrintButton = ({ cvData }) => {
-  const componentRef = useRef();
-  
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-    documentTitle: `${cvData.personalInfo.firstName}_${cvData.personalInfo.lastName}_CV`,
-    pageStyle: `
-      @page {
-        margin: 20mm;
-      }
+const PrintButton = ({ cvData = {} }) => {
+  // Simple direct print
+  const handlePrint = () => {
+    // Store original body content
+    const originalBody = document.body.innerHTML;
+    
+    // Get the CV preview
+    const cvContent = document.getElementById('cv-preview');
+    
+    if (!cvContent) {
+      alert('Cannot find CV content');
+      return;
+    }
+    
+    // Replace body with CV content only
+    document.body.innerHTML = cvContent.outerHTML;
+    
+    // Add print styles
+    const style = document.createElement('style');
+    style.innerHTML = `
       @media print {
-        body {
-          -webkit-print-color-adjust: exact;
+        @page {
+          margin: 15mm;
         }
-        .cv-preview {
-          padding: 0;
+        body {
           font-size: 12pt;
+          line-height: 1.5;
         }
       }
-    `
-  });
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+    `;
+    document.head.appendChild(style);
+    
+    // Trigger print
+    window.print();
+    
+    // Restore original content
+    document.body.innerHTML = originalBody;
+    
+    // Force page reload to restore React
+    window.location.reload();
+  };
 
-  const handleDownloadPDF = () => {
-    alert('PDF download would require additional libraries like jsPDF or html2canvas. For now, use Print and save as PDF.');
+  const handleSavePDF = () => {
+    // Just use print dialog - user can select "Save as PDF"
     handlePrint();
+  };
+
+  const handleCopyText = () => {
+    const safeCvData = {
+      personalInfo: {
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        address: '',
+        website: '',
+        summary: '',
+        ...cvData?.personalInfo
+      },
+      education: cvData?.education || [],
+      experience: cvData?.experience || [],
+      skills: cvData?.skills || []
+    };
+
+    const { personalInfo, education, experience, skills } = safeCvData;
+    
+    let text = `CV - ${personalInfo.firstName} ${personalInfo.lastName}\n`;
+    text += '='.repeat(50) + '\n\n';
+    
+    if (personalInfo.email) text += `Email: ${personalInfo.email}\n`;
+    if (personalInfo.phone) text += `Phone: ${personalInfo.phone}\n`;
+    if (personalInfo.address) text += `Address: ${personalInfo.address}\n`;
+    if (personalInfo.website) text += `Website: ${personalInfo.website}\n`;
+    if (personalInfo.summary) text += `\n${personalInfo.summary}\n\n`;
+    
+    if (experience.length > 0) {
+      text += 'EXPERIENCE:\n';
+      experience.forEach(exp => {
+        text += `${exp.position || ''} at ${exp.company || ''}\n`;
+        text += `${exp.startDate || ''} - ${exp.endDate || 'Present'}\n`;
+        if (exp.description) text += `${exp.description}\n\n`;
+      });
+    }
+    
+    if (education.length > 0) {
+      text += 'EDUCATION:\n';
+      education.forEach(edu => {
+        text += `${edu.degree || ''}\n`;
+        text += `${edu.school || ''}\n`;
+        text += `${edu.startDate || ''} - ${edu.endDate || 'Present'}\n`;
+        if (edu.description) text += `${edu.description}\n\n`;
+      });
+    }
+    
+    if (skills.length > 0) {
+      text += 'SKILLS:\n';
+      skills.forEach(skill => {
+        text += `• ${skill.name || ''} (${skill.level || 0}%)\n`;
+      });
+    }
+    
+    // Try modern clipboard API first
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text)
+        .then(() => alert('✅ CV copied to clipboard!'))
+        .catch(() => fallbackCopy(text));
+    } else {
+      fallbackCopy(text);
+    }
+  };
+
+  const fallbackCopy = (text) => {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+      document.execCommand('copy');
+      alert('✅ CV copied to clipboard!');
+    } catch (err) {
+      alert('❌ Failed to copy. Please select and copy manually.');
+      console.error('Copy failed:', err);
+    }
+    
+    document.body.removeChild(textArea);
   };
 
   return (
     <div className="print-button-container">
-      {/* Hidden component for printing */}
-      <div style={{ display: 'none' }}>
-        <div ref={componentRef}>
-          <div className="cv-preview-print">
-            {/* Header */}
-            <header className="cv-header-print">
-              <div className="cv-name-print">
-                <h1>{cvData.personalInfo.firstName} {cvData.personalInfo.lastName}</h1>
-                {cvData.personalInfo.summary && (
-                  <p className="cv-summary-print">{cvData.personalInfo.summary}</p>
-                )}
-              </div>
-              
-              <div className="cv-contact-print">
-                {cvData.personalInfo.email && (
-                  <div><strong>Email:</strong> {cvData.personalInfo.email}</div>
-                )}
-                {cvData.personalInfo.phone && (
-                  <div><strong>Phone:</strong> {cvData.personalInfo.phone}</div>
-                )}
-                {cvData.personalInfo.address && (
-                  <div><strong>Address:</strong> {cvData.personalInfo.address}</div>
-                )}
-                {cvData.personalInfo.website && (
-                  <div><strong>Website:</strong> {cvData.personalInfo.website}</div>
-                )}
-              </div>
-            </header>
-
-            {/* Content sections will be printed from the preview */}
-          </div>
-        </div>
-      </div>
-
       <div className="button-group">
-        <button 
-          onClick={handlePrint}
-          className="print-btn"
-          title="Print CV"
-        >
+        <button onClick={handlePrint} className="print-btn">
           🖨️ Print CV
         </button>
-        
-        <button 
-          onClick={handleDownloadPDF}
-          className="pdf-btn"
-          title="Download as PDF"
-        >
-          📥 Download PDF
+        <button onClick={handleSavePDF} className="pdf-btn">
+          📥 Save as PDF
         </button>
-        
-        <button 
-          onClick={() => {
-            const cvText = generateCVText(cvData);
-            navigator.clipboard.writeText(cvText)
-              .then(() => alert('CV copied to clipboard!'))
-              .catch(err => console.error('Failed to copy:', err));
-          }}
-          className="copy-btn"
-          title="Copy as Text"
-        >
+        <button onClick={handleCopyText} className="copy-btn">
           📋 Copy Text
         </button>
       </div>
-      
       <p className="print-tip">
-        Tip: Use "Save as PDF" in print dialog for best results
+        For PDF: Click Print, then choose "Save as PDF" in the print dialog
       </p>
     </div>
   );
-};
-
-// Helper function to generate plain text version
-const generateCVText = (cvData) => {
-  const { personalInfo, education, experience, skills } = cvData;
-  
-  let text = `CV - ${personalInfo.firstName} ${personalInfo.lastName}\n`;
-  text += '='.repeat(50) + '\n\n';
-  
-  // Contact Info
-  text += 'CONTACT INFORMATION\n';
-  text += '-' .repeat(20) + '\n';
-  if (personalInfo.email) text += `Email: ${personalInfo.email}\n`;
-  if (personalInfo.phone) text += `Phone: ${personalInfo.phone}\n`;
-  if (personalInfo.address) text += `Address: ${personalInfo.address}\n`;
-  if (personalInfo.website) text += `Website: ${personalInfo.website}\n`;
-  if (personalInfo.summary) text += `\nSummary: ${personalInfo.summary}\n`;
-  text += '\n';
-  
-  // Experience
-  if (experience.length > 0) {
-    text += 'PROFESSIONAL EXPERIENCE\n';
-    text += '-' .repeat(25) + '\n';
-    experience.forEach(exp => {
-      text += `${exp.position} at ${exp.company}\n`;
-      if (exp.startDate || exp.endDate) {
-        text += `Period: ${exp.startDate || ''} - ${exp.endDate || 'Present'}\n`;
-      }
-      if (exp.description) text += `${exp.description}\n`;
-      text += '\n';
-    });
-  }
-  
-  // Education
-  if (education.length > 0) {
-    text += 'EDUCATION\n';
-    text += '-' .repeat(10) + '\n';
-    education.forEach(edu => {
-      text += `${edu.degree}\n`;
-      text += `${edu.school}\n`;
-      if (edu.startDate || edu.endDate) {
-        text += `Period: ${edu.startDate || ''} - ${edu.endDate || 'Present'}\n`;
-      }
-      if (edu.description) text += `${edu.description}\n`;
-      text += '\n';
-    });
-  }
-  
-  // Skills
-  if (skills.length > 0) {
-    text += 'SKILLS\n';
-    text += '-' .repeat(6) + '\n';
-    skills.forEach(skill => {
-      text += `• ${skill.name}\n`;
-    });
-  }
-  
-  return text;
 };
 
 export default PrintButton;

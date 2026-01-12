@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Education.css';
 
-const Education = ({ education, onAdd, onUpdate, onRemove }) => {
+const Education = ({ education = [], onAdd, onUpdate, onRemove }) => {
   const [newEducation, setNewEducation] = useState({
     school: '',
     degree: '',
@@ -20,7 +20,7 @@ const Education = ({ education, onAdd, onUpdate, onRemove }) => {
   };
 
   const handleAdd = () => {
-    if (newEducation.school && newEducation.degree) {
+    if (newEducation.school && newEducation.degree && onAdd) {
       onAdd({
         id: Date.now(),
         ...newEducation,
@@ -38,30 +38,36 @@ const Education = ({ education, onAdd, onUpdate, onRemove }) => {
   };
 
   const handleUpdate = (index, field, value) => {
-    onUpdate(index, { [field]: value });
+    if (onUpdate) {
+      onUpdate(index, { [field]: value });
+    }
   };
 
   const handleCurrentChange = (index, checked) => {
-    if (checked) {
-      onUpdate(index, { endDate: 'Present' });
-    } else {
-      onUpdate(index, { endDate: '' });
+    if (onUpdate) {
+      if (checked) {
+        onUpdate(index, { endDate: 'Present' });
+      } else {
+        onUpdate(index, { endDate: '' });
+      }
     }
   };
 
   return (
     <div className="education">
       {/* Existing Education Items */}
-      {education.map((edu, index) => (
-        <div key={edu.id} className="education-item">
+      {(education || []).map((edu, index) => (
+        <div key={edu.id || index} className="education-item">
           <div className="item-header">
-            <h3 className="item-title">{edu.school}</h3>
-            <button 
-              className="remove-btn"
-              onClick={() => onRemove(index)}
-            >
-              Remove
-            </button>
+            <h3 className="item-title">{edu.school || 'School'}</h3>
+            {onRemove && (
+              <button 
+                className="remove-btn"
+                onClick={() => onRemove(index)}
+              >
+                Remove
+              </button>
+            )}
           </div>
           
           <div className="form-row">
@@ -69,7 +75,7 @@ const Education = ({ education, onAdd, onUpdate, onRemove }) => {
               <label>School/University</label>
               <input
                 type="text"
-                value={edu.school}
+                value={edu.school || ''}
                 onChange={(e) => handleUpdate(index, 'school', e.target.value)}
                 placeholder="Stanford University"
               />
@@ -79,7 +85,7 @@ const Education = ({ education, onAdd, onUpdate, onRemove }) => {
               <label>Degree</label>
               <input
                 type="text"
-                value={edu.degree}
+                value={edu.degree || ''}
                 onChange={(e) => handleUpdate(index, 'degree', e.target.value)}
                 placeholder="Bachelor of Science in Computer Science"
               />
@@ -101,7 +107,7 @@ const Education = ({ education, onAdd, onUpdate, onRemove }) => {
               <div className="date-input-group">
                 <input
                   type="month"
-                  value={edu.endDate === 'Present' ? '' : edu.endDate}
+                  value={edu.endDate === 'Present' ? '' : (edu.endDate || '')}
                   onChange={(e) => handleUpdate(index, 'endDate', e.target.value)}
                   placeholder={edu.endDate === 'Present' ? 'Present' : 'YYYY-MM'}
                   disabled={edu.endDate === 'Present'}
@@ -122,7 +128,7 @@ const Education = ({ education, onAdd, onUpdate, onRemove }) => {
           <div className="form-group">
             <label>Description</label>
             <textarea
-              value={edu.description}
+              value={edu.description || ''}
               onChange={(e) => handleUpdate(index, 'description', e.target.value)}
               placeholder="Describe your education, achievements, relevant coursework..."
               rows="3"

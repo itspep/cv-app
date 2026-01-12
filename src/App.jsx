@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import Header from './components/Header/Header';
 import PersonalInfo from './components/PersonalInfo/PersonalInfo';
@@ -10,7 +10,16 @@ import PrintButton from './components/PrintButton/PrintButton';
 import { initialCV } from './utils/initialData';
 
 function App() {
-  const [cvData, setCvData] = useState(initialCV);
+  const [cvData, setCvData] = useState(() => {
+    // Try to load from localStorage first
+    const savedCV = localStorage.getItem('cvData');
+    return savedCV ? JSON.parse(savedCV) : initialCV;
+  });
+
+  // Save to localStorage whenever cvData changes
+  useEffect(() => {
+    localStorage.setItem('cvData', JSON.stringify(cvData));
+  }, [cvData]);
 
   const updatePersonalInfo = (data) => {
     setCvData({ ...cvData, personalInfo: { ...cvData.personalInfo, ...data } });
