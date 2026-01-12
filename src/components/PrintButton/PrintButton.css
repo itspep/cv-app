@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
 }
 
 .button-group {
@@ -15,10 +15,10 @@
 .print-btn,
 .pdf-btn,
 .copy-btn {
-  padding: 12px 24px;
+  padding: 10px 20px;
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -26,40 +26,40 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-width: 160px;
+  min-width: 140px;
 }
 
 .print-btn {
-  background: linear-gradient(135deg, #4a6fa5 0%, #2c3e50 100%);
-  color: white;
-}
-
-.pdf-btn {
-  background: linear-gradient(135deg, #27ae60 0%, #219653 100%);
-  color: white;
-}
-
-.copy-btn {
-  background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+  background: #4a6fa5;
   color: white;
 }
 
 .print-btn:hover {
-  background: linear-gradient(135deg, #3a5a80 0%, #1a252f 100%);
+  background: #3a5a80;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(74, 111, 165, 0.3);
+  box-shadow: 0 4px 8px rgba(74, 111, 165, 0.3);
+}
+
+.pdf-btn {
+  background: #27ae60;
+  color: white;
 }
 
 .pdf-btn:hover {
-  background: linear-gradient(135deg, #219653 0%, #1e8449 100%);
+  background: #219653;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+  box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
+}
+
+.copy-btn {
+  background: #9b59b6;
+  color: white;
 }
 
 .copy-btn:hover {
-  background: linear-gradient(135deg, #8e44ad 0%, #7d3c98 100%);
+  background: #8e44ad;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(155, 89, 182, 0.3);
+  box-shadow: 0 4px 8px rgba(155, 89, 182, 0.3);
 }
 
 .print-btn:active,
@@ -70,55 +70,11 @@
 
 .print-tip {
   color: #666;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   text-align: center;
   margin: 0;
   font-style: italic;
-}
-
-/* Print-specific styles */
-@media print {
-  .print-button-container {
-    display: none;
-  }
-}
-
-/* Styles for the hidden print version */
-.cv-preview-print {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
-  line-height: 1.6;
-  padding: 20px;
-}
-
-.cv-header-print {
-  border-bottom: 2px solid #4a6fa5;
-  padding-bottom: 20px;
-  margin-bottom: 25px;
-  display: flex;
-  justify-content: space-between;
-}
-
-.cv-name-print h1 {
-  margin: 0 0 10px 0;
-  font-size: 2rem;
-  color: #2c3e50;
-}
-
-.cv-summary-print {
-  margin: 0;
-  color: #666;
-  font-size: 1rem;
-  max-width: 600px;
-}
-
-.cv-contact-print {
-  font-size: 0.9rem;
-  text-align: right;
-}
-
-.cv-contact-print div {
-  margin-bottom: 4px;
+  max-width: 300px;
 }
 
 @media (max-width: 768px) {
@@ -133,17 +89,13 @@
     width: 100%;
     min-width: auto;
   }
-  
-  .print-button-container {
-    width: 100%;
-  }
 }
 
 @media (max-width: 480px) {
   .print-btn,
   .pdf-btn,
   .copy-btn {
-    padding: 10px 20px;
-    font-size: 0.95rem;
+    padding: 8px 16px;
+    font-size: 0.9rem;
   }
 }
