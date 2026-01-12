@@ -72,7 +72,7 @@ const PersonalInfo = ({ data, onChange }) => {
             name="phone"
             value={safeData.phone || ''}
             onChange={handleChange}
-            placeholder="024 456-7890"
+            placeholder="(+233) 456-7890"
           />
         </div>
       </div>
