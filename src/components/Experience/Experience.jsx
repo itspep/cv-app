@@ -7,32 +7,46 @@ const Experience = ({ experience, onAdd, onUpdate, onRemove }) => {
     position: '',
     startDate: '',
     endDate: '',
-    description: ''
+    description: '',
+    isCurrent: false
   });
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewExperience(prev => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setNewEducation(prev => ({ 
+      ...prev, 
+      [name]: type === 'checkbox' ? checked : value 
+    }));
   };
 
   const handleAdd = () => {
     if (newExperience.company && newExperience.position) {
       onAdd({
         id: Date.now(),
-        ...newExperience
+        ...newExperience,
+        endDate: newExperience.isCurrent ? 'Present' : newExperience.endDate
       });
       setNewExperience({
         company: '',
         position: '',
         startDate: '',
         endDate: '',
-        description: ''
+        description: '',
+        isCurrent: false
       });
     }
   };
 
   const handleUpdate = (index, field, value) => {
     onUpdate(index, { [field]: value });
+  };
+
+  const handleCurrentChange = (index, checked) => {
+    if (checked) {
+      onUpdate(index, { endDate: 'Present' });
+    } else {
+      onUpdate(index, { endDate: '' });
+    }
   };
 
   return (
@@ -77,19 +91,31 @@ const Experience = ({ experience, onAdd, onUpdate, onRemove }) => {
               <label>Start Date</label>
               <input
                 type="month"
-                value={exp.startDate}
+                value={exp.startDate || ''}
                 onChange={(e) => handleUpdate(index, 'startDate', e.target.value)}
               />
             </div>
             
             <div className="form-group">
-              <label>End Date (or Present)</label>
-              <input
-                type="month"
-                value={exp.endDate}
-                onChange={(e) => handleUpdate(index, 'endDate', e.target.value)}
-                placeholder="Present"
-              />
+              <label>End Date</label>
+              <div className="date-input-group">
+                <input
+                  type="month"
+                  value={exp.endDate === 'Present' ? '' : exp.endDate}
+                  onChange={(e) => handleUpdate(index, 'endDate', e.target.value)}
+                  placeholder={exp.endDate === 'Present' ? 'Present' : 'YYYY-MM'}
+                  disabled={exp.endDate === 'Present'}
+                />
+                <div className="checkbox-group">
+                  <input
+                    type="checkbox"
+                    id={`current-${index}`}
+                    checked={exp.endDate === 'Present'}
+                    onChange={(e) => handleCurrentChange(index, e.target.checked)}
+                  />
+                  <label htmlFor={`current-${index}`}>Currently working here</label>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -145,14 +171,27 @@ const Experience = ({ experience, onAdd, onUpdate, onRemove }) => {
           </div>
           
           <div className="form-group">
-            <label>End Date (or Present)</label>
-            <input
-              type="month"
-              name="endDate"
-              value={newExperience.endDate}
-              onChange={handleInputChange}
-              placeholder="Leave empty for 'Present'"
-            />
+            <label>End Date</label>
+            <div className="date-input-group">
+              <input
+                type="month"
+                name="endDate"
+                value={newExperience.isCurrent ? '' : newExperience.endDate}
+                onChange={handleInputChange}
+                placeholder={newExperience.isCurrent ? 'Present' : 'YYYY-MM'}
+                disabled={newExperience.isCurrent}
+              />
+              <div className="checkbox-group">
+                <input
+                  type="checkbox"
+                  id="new-current"
+                  name="isCurrent"
+                  checked={newExperience.isCurrent}
+                  onChange={handleInputChange}
+                />
+                <label htmlFor="new-current">Currently working here</label>
+              </div>
+            </div>
           </div>
         </div>
 

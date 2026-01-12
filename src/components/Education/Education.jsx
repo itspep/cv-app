@@ -7,32 +7,46 @@ const Education = ({ education, onAdd, onUpdate, onRemove }) => {
     degree: '',
     startDate: '',
     endDate: '',
-    description: ''
+    description: '',
+    isCurrent: false
   });
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewEducation(prev => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setNewEducation(prev => ({ 
+      ...prev, 
+      [name]: type === 'checkbox' ? checked : value 
+    }));
   };
 
   const handleAdd = () => {
     if (newEducation.school && newEducation.degree) {
       onAdd({
         id: Date.now(),
-        ...newEducation
+        ...newEducation,
+        endDate: newEducation.isCurrent ? 'Present' : newEducation.endDate
       });
       setNewEducation({
         school: '',
         degree: '',
         startDate: '',
         endDate: '',
-        description: ''
+        description: '',
+        isCurrent: false
       });
     }
   };
 
   const handleUpdate = (index, field, value) => {
     onUpdate(index, { [field]: value });
+  };
+
+  const handleCurrentChange = (index, checked) => {
+    if (checked) {
+      onUpdate(index, { endDate: 'Present' });
+    } else {
+      onUpdate(index, { endDate: '' });
+    }
   };
 
   return (
@@ -77,18 +91,31 @@ const Education = ({ education, onAdd, onUpdate, onRemove }) => {
               <label>Start Date</label>
               <input
                 type="month"
-                value={edu.startDate}
+                value={edu.startDate || ''}
                 onChange={(e) => handleUpdate(index, 'startDate', e.target.value)}
               />
             </div>
             
             <div className="form-group">
-              <label>End Date (or expected)</label>
-              <input
-                type="month"
-                value={edu.endDate}
-                onChange={(e) => handleUpdate(index, 'endDate', e.target.value)}
-              />
+              <label>End Date</label>
+              <div className="date-input-group">
+                <input
+                  type="month"
+                  value={edu.endDate === 'Present' ? '' : edu.endDate}
+                  onChange={(e) => handleUpdate(index, 'endDate', e.target.value)}
+                  placeholder={edu.endDate === 'Present' ? 'Present' : 'YYYY-MM'}
+                  disabled={edu.endDate === 'Present'}
+                />
+                <div className="checkbox-group">
+                  <input
+                    type="checkbox"
+                    id={`edu-current-${index}`}
+                    checked={edu.endDate === 'Present'}
+                    onChange={(e) => handleCurrentChange(index, e.target.checked)}
+                  />
+                  <label htmlFor={`edu-current-${index}`}>Currently studying</label>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -144,13 +171,27 @@ const Education = ({ education, onAdd, onUpdate, onRemove }) => {
           </div>
           
           <div className="form-group">
-            <label>End Date (or expected)</label>
-            <input
-              type="month"
-              name="endDate"
-              value={newEducation.endDate}
-              onChange={handleInputChange}
-            />
+            <label>End Date</label>
+            <div className="date-input-group">
+              <input
+                type="month"
+                name="endDate"
+                value={newEducation.isCurrent ? '' : newEducation.endDate}
+                onChange={handleInputChange}
+                placeholder={newEducation.isCurrent ? 'Present' : 'YYYY-MM'}
+                disabled={newEducation.isCurrent}
+              />
+              <div className="checkbox-group">
+                <input
+                  type="checkbox"
+                  id="new-edu-current"
+                  name="isCurrent"
+                  checked={newEducation.isCurrent}
+                  onChange={handleInputChange}
+                />
+                <label htmlFor="new-edu-current">Currently studying</label>
+              </div>
+            </div>
           </div>
         </div>
 

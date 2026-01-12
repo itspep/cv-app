@@ -32,7 +32,7 @@ export const initialCV = {
       company: 'Tech Innovations Inc.',
       position: 'Senior Software Engineer',
       startDate: '2020-03',
-      endDate: 'Present',
+      endDate: 'Present',  // This will now work with the checkbox
       description: 'Lead development of cloud-based SaaS platform. Manage team of 5 developers. Implemented microservices architecture reducing latency by 40%.'
     },
     {
