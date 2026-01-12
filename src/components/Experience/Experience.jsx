@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Experience.css';
 
-const Experience = ({ experience, onAdd, onUpdate, onRemove }) => {
+const Experience = ({ experience = [], onAdd, onUpdate, onRemove }) => {
   const [newExperience, setNewExperience] = useState({
     company: '',
     position: '',
@@ -13,14 +13,14 @@ const Experience = ({ experience, onAdd, onUpdate, onRemove }) => {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setNewEducation(prev => ({ 
+    setNewExperience(prev => ({ 
       ...prev, 
       [name]: type === 'checkbox' ? checked : value 
     }));
   };
 
   const handleAdd = () => {
-    if (newExperience.company && newExperience.position) {
+    if (newExperience.company && newExperience.position && onAdd) {
       onAdd({
         id: Date.now(),
         ...newExperience,
@@ -38,30 +38,36 @@ const Experience = ({ experience, onAdd, onUpdate, onRemove }) => {
   };
 
   const handleUpdate = (index, field, value) => {
-    onUpdate(index, { [field]: value });
+    if (onUpdate) {
+      onUpdate(index, { [field]: value });
+    }
   };
 
   const handleCurrentChange = (index, checked) => {
-    if (checked) {
-      onUpdate(index, { endDate: 'Present' });
-    } else {
-      onUpdate(index, { endDate: '' });
+    if (onUpdate) {
+      if (checked) {
+        onUpdate(index, { endDate: 'Present' });
+      } else {
+        onUpdate(index, { endDate: '' });
+      }
     }
   };
 
   return (
     <div className="experience">
       {/* Existing Experience Items */}
-      {experience.map((exp, index) => (
-        <div key={exp.id} className="experience-item">
+      {(experience || []).map((exp, index) => (
+        <div key={exp.id || index} className="experience-item">
           <div className="item-header">
-            <h3 className="item-title">{exp.company}</h3>
-            <button 
-              className="remove-btn"
-              onClick={() => onRemove(index)}
-            >
-              Remove
-            </button>
+            <h3 className="item-title">{exp.company || 'Company'}</h3>
+            {onRemove && (
+              <button 
+                className="remove-btn"
+                onClick={() => onRemove(index)}
+              >
+                Remove
+              </button>
+            )}
           </div>
           
           <div className="form-row">
@@ -69,7 +75,7 @@ const Experience = ({ experience, onAdd, onUpdate, onRemove }) => {
               <label>Company *</label>
               <input
                 type="text"
-                value={exp.company}
+                value={exp.company || ''}
                 onChange={(e) => handleUpdate(index, 'company', e.target.value)}
                 placeholder="Google"
               />
@@ -79,7 +85,7 @@ const Experience = ({ experience, onAdd, onUpdate, onRemove }) => {
               <label>Position *</label>
               <input
                 type="text"
-                value={exp.position}
+                value={exp.position || ''}
                 onChange={(e) => handleUpdate(index, 'position', e.target.value)}
                 placeholder="Senior Software Engineer"
               />
@@ -101,7 +107,7 @@ const Experience = ({ experience, onAdd, onUpdate, onRemove }) => {
               <div className="date-input-group">
                 <input
                   type="month"
-                  value={exp.endDate === 'Present' ? '' : exp.endDate}
+                  value={exp.endDate === 'Present' ? '' : (exp.endDate || '')}
                   onChange={(e) => handleUpdate(index, 'endDate', e.target.value)}
                   placeholder={exp.endDate === 'Present' ? 'Present' : 'YYYY-MM'}
                   disabled={exp.endDate === 'Present'}
@@ -122,7 +128,7 @@ const Experience = ({ experience, onAdd, onUpdate, onRemove }) => {
           <div className="form-group">
             <label>Description</label>
             <textarea
-              value={exp.description}
+              value={exp.description || ''}
               onChange={(e) => handleUpdate(index, 'description', e.target.value)}
               placeholder="Describe your responsibilities, achievements, and technologies used..."
               rows="4"
